@@ -1,4 +1,4 @@
-#*obf* - an obfuscation tool and library
+# *obf* - an obfuscation tool and library
 
 *obf* is designed to obfuscate an input document, whilst ensuring that the output is still (somewhat) human-readable and 
 while also maintaining consistency of mapping between an input plaintext and an obfuscated output, such that 
