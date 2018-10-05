@@ -1,0 +1,7 @@
+This is a sample file that holds some secrets. For example, both Bob and Sue are examples of a secret name.
+Similarly you'd expect that their email addresses bob@bobandsue.com and sue@bobandsue.com should be considered secrets.
+This line just confims behaviour with preceding or following punctuation, and EOL behaviour. "Bob", "Sue". Bob's house. Sue
+Bob Sue.
+
+This line has another email address in it: alpha.beta@google.com that ought to be obfuscated.
+
