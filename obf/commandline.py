@@ -40,13 +40,6 @@ def main():
         for i in parser.parse_args().e.split(','):
             excluded_domains.append(i.strip())
 
-    # Verbose mode?
-    if(parser.parse_args().v):
-        print("starting index in hash to use as index={}; number of bytes from hash to use as index={}; entries in "
-              "codeword file={};\n"\
-              "excluded domains:{}\n".format(n,p,len(codewords),excluded_domains))
-
-
 
     # Is a blockedwords file provided?
     blockedwords=[]
@@ -75,7 +68,11 @@ def main():
                        codewords_file=codewords_file,
                        codewords_hash='25e011f81127ec5b07511850b3c153ce6939ff9b96bc889b2e66fb36782fbc0e',
                        excluded_domains=excluded_domains)
-    print(o.describe())
+
+    d=o.describe()
+    # Verbose mode?
+    if (parser.parse_args().v):
+        print(d)
 
     # is some plaintext provided directly on the command line?
     if args.plaintext:

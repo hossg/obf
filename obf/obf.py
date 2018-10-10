@@ -65,7 +65,8 @@ class obfuscator:
             'hash_index_length':self.p,
             'codewords_file':self.codewords_file,
             'codewords_hash':self.codewords_hash,
-            'excluded_domains':self.excluded_domains
+            'excluded_domains':self.excluded_domains,
+            'codewords_length':len(self.codewordsgit )
         }
 
     def load_codewords(self,filename):
