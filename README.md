@@ -14,9 +14,17 @@ it's continued consistency, and thus operability without requiring any changes t
 unprotected "red" zones, including developer workstations and laptops while maintaining reasonable data privacy. *obf* 
 is intended to be used either as a standalone tool or as a library in an automated data-copy process.  
 
+**Installation instructions**
+-----------------------------
+*obf* is written in Python, and you can use the pip installer to install it thus:
+
+```
+$ pip install obf
+```
+
 **Usage**
 ---------
-`obf.py [-h] [-b [blockedwords file]] [-c [C]] [-n [N]] [plaintext]`
+`obf [-h] [-b [blockedwords file]] [-c [C]] [-n [N]] [plaintext]`
 
 
 
@@ -44,50 +52,69 @@ If no plaintext is provided, then obf will look at stdin instead.
 
 **Examples**
 ------------
+
 ```
-$ ./obf.py hello 
+$ obf hello
 SPRIGHTFUL
-$
-```
 
 ```
-
-$ cat plaintext.txt | ./obf.py
-LITHARGE LUNE FELINES PROPHECY FORBORNE ANKLUNGS SPAMS VOYAGE WIVERNS. OUBLIETTES RESTRICTIONS TRIPTYCHS DREAMING BOLETUS STIRRING THYME BURK TWINS FELINES FRETS PEMMICAN.
+```
+$ cat plaintext.txt | obf
+LITHARGE LUNE FELINES PROPHECY FORBORNE ANKLUNGS SPAMS VOYAGE WIVERNS. OUBLIETTES RESTRICTIONS, TRIPTYCHS DREAMING BOLETUS STIRRING THYME BURK TWINS FELINES FRETS PEMMICAN.
 STUBBORNNESS HANKERS'BACKSWORD GIFTS ANKLUNGS RIDER PICA RECTA DREAMING@CORPULENCE.TACHOGRAMS BOLETUS STIRRING@CORPULENCE.TACHOGRAMS BLUNGER GIBUSES REPLETES WIVERNS.
-LITHARGE SLOTTERS ELUDE DIPODIES GABFESTS EXORCISM URCHIN SOLUTE UNEARTHS PRUNES BOLETUS STRAFE GABFESTS. "DREAMING", "STIRRING". DREAMING
-$
+LITHARGE SLOTTERS ELUDE DIPODIES GABFESTS EXORCISM URCHIN SOLUTE UNEARTHS PRUNES, BOLETUS STRAFE GABFESTS. "DREAMING", "STIRRING". DREAMING'UPRISE ASPHALTS. STIRRING
+DREAMING STIRRING.
+
+LITHARGE SLOTTERS GAMB LODGED PICA BAWL TRANSACTORS ROUTINISTS: PIXELS.JUMBLER@CONNECTORS.TACHOGRAMS ANKLUNGS BANTENG COENZYME GIBUSES FLOCKS.
+
+
 ```
 ```
-$ cat plaintext.txt | ./obf.py -b blockedwords.txt
-This is a sample file that holds some secrets. For example both DREAMING and STIRRING are examples of a secret PEMMICAN.
+$ cat plaintext.txt | obf -b blockedwords.txt 
+This is a sample file that holds some secrets. For example, both DREAMING and STIRRING are examples of a FRETS PEMMICAN.
 Similarly you'd expect that their email addresses DREAMING@CORPULENCE.com and STIRRING@CORPULENCE.com should be considered secrets.
-This line just confims behaviour with preceding or following punctuation and EOL behaviour. "DREAMING", "STIRRING". DREAMING
-$
+This line just confims behaviour with preceding or following punctuation, and EOL behaviour. "DREAMING", "STIRRING". DREAMING's house. STIRRING
+DREAMING STIRRING.
+
+This line has another email address in it: PIXELS.JUMBLER@CONNECTORS.com that ought to be obfuscated.
+
+
 ```
- ```
- $ cat plaintext.txt | ./obf.py -b blockedwords.txt -n 23
-This is a sample file that holds some secrets. For example both RETENE and GIBLETS are examples of a secret CLEAVE.
+```
+$ cat plaintext.txt | obf -b blockedwords.txt -n23
+This is a sample file that holds some secrets. For example, both RETENE and GIBLETS are examples of a SACCHAROID CLEAVE.
 Similarly you'd expect that their email addresses RETENE@TEMPERS.com and GIBLETS@TEMPERS.com should be considered secrets.
-This line just confims behaviour with preceding or following punctuation and EOL behaviour. "RETENE", "GIBLETS". RETENE
-$
-```
+This line just confims behaviour with preceding or following punctuation, and EOL behaviour. "RETENE", "GIBLETS". RETENE's house. GIBLETS
+RETENE GIBLETS.
+
+This line has another email address in it: UNREELS.CLEEKS@UPBEARS.com that ought to be obfuscated.
+
 
 ```
-$ cat plaintext.txt | ./obf.py -b blockedwords.txt -n 23 -v -e bobandsue
-starting index in hash to use as index=23; number of bytes from hash to use as index=4; entries in codeword file=66740;
-excluded domains:['com', 'org', 'co', 'uk', 'bobandsue']
-
-This is a sample file that holds some secrets. For example both RETENE and GIBLETS are examples of a secret CLEAVE.
+```
+$ cat plaintext.txt | obf -b blockedwords.txt -n23 -e bobandsue
+This is a sample file that holds some secrets. For example, both RETENE and GIBLETS are examples of a SACCHAROID CLEAVE.
 Similarly you'd expect that their email addresses RETENE@bobandsue.com and GIBLETS@bobandsue.com should be considered secrets.
-This line just confims behaviour with preceding or following punctuation and EOL behaviour. "RETENE", "GIBLETS". RETENE
-$
-```
-```
-$ cat plaintext.txt | ./obf.py -b blockedwords.txt -n 23 -c
+This line just confims behaviour with preceding or following punctuation, and EOL behaviour. "RETENE", "GIBLETS". RETENE's house. GIBLETS
+RETENE GIBLETS.
 
+This line has another email address in it: UNREELS.CLEEKS@UPBEARS.com that ought to be obfuscated.
+
+
+```
+```
+$ cat plaintext.txt | obf -b blockedwords.txt -n23 -e bobandsue -v -c
+{'blockedwords': ['secret', 'name', 'bob', 'sue'], 'hash_index': 23, 'hash_index_length': 4, 
+'codewords_file': '/Users/hossein/anaconda3/lib/python3.6/site-packages/obf/codewords.txt', 
+'codewords_hash': '25e011f81127ec5b07511850b3c153ce6939ff9b96bc889b2e66fb36782fbc0e', 
+'excluded_domains': ['com', 'org', 'co', 'uk', 'bobandsue'], 'codewords_length': 66740}
 secret -> SACCHAROID
 name -> CLEAVE
 bob -> RETENE
 sue -> GIBLETS
 ```
+
+**Homepage**
+------------
+
+You can find the homepage of *obf* at https://github.com/hossg/obf

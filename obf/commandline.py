@@ -7,8 +7,9 @@ def main():
 
     parser = argparse.ArgumentParser(
         description="obf - an obfuscation tool",
-        epilog="If no plaintext is provided, then obf will look at stdin instead.")
-    parser.add_argument('plaintext',nargs="?", help="A plaintext to obfuscate.")
+        epilog="More information/homepage: https://github.com/hossg/obf'")
+    parser.add_argument('plaintext',nargs="?", help="A plaintext to obfuscate. If no plaintext is provided, then obf " \
+                                                    "will look at stdin instead.")
     parser.add_argument('-b',metavar='blockedwords file',nargs='?', help="A file containing specific words to block. " \
                                                                         "If missing the entire input is obfuscated.")
     parser.add_argument('-w', metavar='codewords file', nargs='?',
@@ -49,16 +50,6 @@ def main():
             for line in lines:
                 for word in line.split():
                     blockedwords.append(word.strip())
-
-        # and if so, is a crib sheet required?
-        if (parser.parse_args().c):
-            for entry in blockedwords:
-                s = []
-                for item in entry.split():
-                    s.append(encode(item))
-
-                print("{} -> {}".format(entry, ' '.join(s)))
-            quit()
     else:
         blockedwords=False
 
@@ -73,6 +64,17 @@ def main():
     # Verbose mode?
     if (parser.parse_args().v):
         print(d)
+
+    # and if so, is a crib sheet required?
+    if (blockedwords and args.c):
+        for entry in blockedwords:
+            s = []
+            for item in entry.split():
+                s.append(o.encode(item))
+
+            print("{} -> {}".format(entry, ' '.join(s)))
+        quit()
+
 
     # is some plaintext provided directly on the command line?
     if args.plaintext:
