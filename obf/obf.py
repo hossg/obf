@@ -37,7 +37,7 @@ import sys
 
 class obfuscator:
 
-    def __init__(self, algo="SHA356",salt='',blockedwords=None, hash_index=0, hash_index_length=4,codewords_file="codewords.txt",
+    def __init__(self, algo="SHA256",salt='',blockedwords=None, hash_index=0, hash_index_length=4,codewords_file="codewords.txt",
                  codewords_hash='25e011f81127ec5b07511850b3c153ce6939ff9b96bc889b2e66fb36782fbc0e',
                  excluded_domains=['com', 'org', 'co', 'uk']):
 
@@ -108,7 +108,7 @@ class obfuscator:
     # Encode a string
     # This algorithm is case-insensitive in order to ensure easy, human-level consistency across plaintext and ciphertext.
     def encode(self,s):
-        s=self.salt+s
+        s=self.salt+s                       # TODO - should probably move this to the the stored hasher, before it's repeatedly copied
         bytes = s.upper().encode('utf-8')
         a=self.hash_algo.copy()
         a.update(bytes)
