@@ -37,7 +37,7 @@ import sys
 
 class obfuscator:
 
-    def __init__(self, blockedwords=None, hash_index=0, hash_index_length=4,codewords_file="codewords.txt",
+    def __init__(self, salt='',blockedwords=None, hash_index=0, hash_index_length=4,codewords_file="codewords.txt",
                  codewords_hash='25e011f81127ec5b07511850b3c153ce6939ff9b96bc889b2e66fb36782fbc0e',
                  excluded_domains=['com', 'org', 'co', 'uk']):
 
@@ -55,11 +55,13 @@ class obfuscator:
         self.codewords_hash=codewords_hash
         if self.__check_integrity():
             self.codewords = self.load_codewords(codewords_file)
+        self.salt=salt
 
 
 
     def describe(self):
         return {
+            'salt' : self.salt,
             'blockedwords' : self.blockedwords,
             'hash_index':self.n,
             'hash_index_length':self.p,
@@ -67,6 +69,7 @@ class obfuscator:
             'codewords_hash':self.codewords_hash,
             'excluded_domains':self.excluded_domains,
             'codewords_length':len(self.codewords)
+
         }
 
     def load_codewords(self,filename):
@@ -101,6 +104,7 @@ class obfuscator:
     # Encode a string
     # This algorithm is case-insensitive in order to ensure easy, human-level consistency across plaintext and ciphertext.
     def encode(self,s):
+        s=self.salt+s
         bytes = s.upper().encode('utf-8')
         h = hashlib.sha256(bytes).hexdigest()[self.n:self.n+self.p]    # use the 4 bytes from position n in the hash
         d = int(h, 16)                                  # as an index into the codeword table

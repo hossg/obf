@@ -27,11 +27,13 @@ def main():
                         help="A string of comma-separated domain name components that should be exempt from obfuscation"\
                         " to aid readability. Dots are not permitted/valid. Defaults to 'com,co,uk,org' and any that "\
                         "are specified on the command line are added to this list.")
+    parser.add_argument('-s','--salt', nargs='?', default='',
+                        help="A salt for the hash function to ensure uniqueness of encoding.")
     parser.add_argument('-v', action="store_true", help="Verbose mode = show key parameters, etc" )
 
 
     args=parser.parse_args()
-
+    print(args)
     # Firstly deal with setting the N value to be different to the default.
 
     codewords_file=args.w
@@ -53,11 +55,14 @@ def main():
     else:
         blockedwords=False
 
-    o = obf.obfuscator(blockedwords=blockedwords,
+    o = obf.obfuscator(salt=args.salt,
+                       blockedwords=blockedwords,
                        hash_index=args.n,
                        hash_index_length=4,
                        codewords_file=codewords_file,
                        codewords_hash='25e011f81127ec5b07511850b3c153ce6939ff9b96bc889b2e66fb36782fbc0e',
+                       # TODO remove this from the constructor, as we should really be able to rely on the core package for the DEFAULT codewords hash value
+
                        excluded_domains=excluded_domains)
 
     d=o.describe()
