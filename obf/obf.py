@@ -37,7 +37,7 @@ import sys
 
 class obfuscator:
 
-    def __init__(self, salt='',blockedwords=None, hash_index=0, hash_index_length=4,codewords_file="codewords.txt",
+    def __init__(self, algo="SHA356",salt='',blockedwords=None, hash_index=0, hash_index_length=4,codewords_file="codewords.txt",
                  codewords_hash='25e011f81127ec5b07511850b3c153ce6939ff9b96bc889b2e66fb36782fbc0e',
                  excluded_domains=['com', 'org', 'co', 'uk']):
 
@@ -56,11 +56,13 @@ class obfuscator:
         if self.__check_integrity():
             self.codewords = self.load_codewords(codewords_file)
         self.salt=salt
+        self.hash_algo=hashlib.new(algo)
 
 
 
     def describe(self):
         return {
+            'hash_algo' : self.hash_algo,
             'salt' : self.salt,
             'blockedwords' : self.blockedwords,
             'hash_index':self.n,
@@ -90,7 +92,8 @@ class obfuscator:
     # is an important characteristic of the package.
     def __check_integrity(self):
         with open(self.codewords_file,'rb') as binary_file:
-            h = hashlib.sha256()
+            h = hashlib.sha256()    # The integrity check is always based upon a SHA256 fingerprint, it's
+                                    # unrelated to the hashing used for the core obf functionality
             while True:
                 data = binary_file.read(2 ** 20)
                 if not data:
@@ -106,7 +109,9 @@ class obfuscator:
     def encode(self,s):
         s=self.salt+s
         bytes = s.upper().encode('utf-8')
-        h = hashlib.sha256(bytes).hexdigest()[self.n:self.n+self.p]    # use the 4 bytes from position n in the hash
+        a=self.hash_algo.copy()
+        a.update(bytes)
+        h = a.hexdigest()[self.n:self.n+self.p]    # use the 4 bytes from position n in the hash
         d = int(h, 16)                                  # as an index into the codeword table
         i = d % len(self.codewords)                          # wrap to ensure we always return a value, in case the codeword
                                                         # file is too short. This would break 1->1 mapping of plaintext

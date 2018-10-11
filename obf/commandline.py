@@ -27,17 +27,21 @@ def main():
                         help="A string of comma-separated domain name components that should be exempt from obfuscation"\
                         " to aid readability. Dots are not permitted/valid. Defaults to 'com,co,uk,org' and any that "\
                         "are specified on the command line are added to this list.")
+    parser.add_argument('-a','--algo', nargs='?',default="SHA256",
+                        help="The hash algorithm to use as a basis for indexing the codewords file; defaults to SHA256")
     parser.add_argument('-s','--salt', nargs='?', default='',
                         help="A salt for the hash function to ensure uniqueness of encoding.")
-    parser.add_argument('-v', action="store_true", help="Verbose mode = show key parameters, etc" )
-
+    parser.add_argument('-l', '--list-algos', action="store_true", help="List available hash algorithms.")
+    parser.add_argument('-v', action="store_true", help="Verbose mode = show key parameters, etc")
 
     args=parser.parse_args()
-    print(args)
-    # Firstly deal with setting the N value to be different to the default.
+
+    if args.list_algos:
+        print(sorted(hashlib.algorithms_available))
+        quit()
+
 
     codewords_file=args.w
-
     excluded_domains = ['com', 'org', 'co', 'uk']
     if (parser.parse_args().e):
         for i in parser.parse_args().e.split(','):
@@ -55,7 +59,8 @@ def main():
     else:
         blockedwords=False
 
-    o = obf.obfuscator(salt=args.salt,
+    o = obf.obfuscator(algo=args.algo,
+                       salt=args.salt,
                        blockedwords=blockedwords,
                        hash_index=args.n,
                        hash_index_length=4,
