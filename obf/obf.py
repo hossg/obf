@@ -19,8 +19,7 @@
 
 import hashlib
 import re
-import argparse
-import sys
+import os
 
 # requirements:
 # 1. a plaintext word always maps to the same codeword
@@ -37,7 +36,8 @@ import sys
 
 class obfuscator:
 
-    def __init__(self, algo="SHA256",salt='',blockedwords=None, hash_index=0, hash_index_length=4,codewords_file="codewords.txt",
+    def __init__(self, algo="SHA256",salt='',blockedwords=None, hash_index=0, hash_index_length=4,
+                 codewords_file=os.path.dirname(__file__)+'/'+"codewords.txt",
                  codewords_hash='25e011f81127ec5b07511850b3c153ce6939ff9b96bc889b2e66fb36782fbc0e',
                  excluded_domains=['com', 'org', 'co', 'uk']):
 
