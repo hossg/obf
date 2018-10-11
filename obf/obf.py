@@ -44,10 +44,12 @@ class obfuscator:
         self.excluded_domains=excluded_domains
         self.p=hash_index_length
         self.n=hash_index                 # The default position in the hash string to use as a lookup into the codewords list
+        self.salt = salt
+        self.hash_algo = hashlib.new(algo)
         if self.n < 0:
             self.n = 0
-        if self.n > (hashlib.sha256().digest_size - self.p):
-            self.n = hashlib.sha256().digest_size - self.p
+        if self.n > (self.hash_algo.digest_size - self.p):
+            self.n = self.hash_algo.digest_size - self.p
 
         self.blockedwords=blockedwords    # A list of words we want to explicitly block
 
@@ -55,14 +57,13 @@ class obfuscator:
         self.codewords_hash=codewords_hash
         if self.__check_integrity():
             self.codewords = self.load_codewords(codewords_file)
-        self.salt=salt
-        self.hash_algo=hashlib.new(algo)
+
 
 
 
     def describe(self):
         return {
-            'hash_algo' : self.hash_algo,
+            'hash_algo' : self.hash_algo.name,
             'salt' : self.salt,
             'blockedwords' : self.blockedwords,
             'hash_index':self.n,
