@@ -24,31 +24,56 @@ $ pip install obf
 
 **Usage**
 ---------
-`obf [-h] [-b [blockedwords file]] [-c [C]] [-n [N]] [plaintext]`
+```
+obf [-h] [-b [blockedwords file]] [-w [codewords file]] [-c]
+                      [-n [N]] [-e [E]] [-a [ALGO]] [-s [SALT]] [-l] [-v]
+                      [plaintext]
 
+```
 
+#### positional arguments:
 
-*positional arguments:*
+  ```plaintext             ```A plaintext to obfuscate. If no plaintext is provided,
+                        then obf will look at stdin instead.
 
-`plaintext`            A plaintext to obfuscate.
+#### optional arguments:
 
-*optional arguments:*
-
-`  -h, --help `           show this help message and exit
-
-`  -b [blockedwords file]`
+```-h, --help```            show this help message and exit
+  
+```-b [blockedwords file]```
                         A file containing specific words to block. If missing
                         the entire input is obfuscated.
                         
-`  -c [C] `              Display a crib showing the mapping of blocked values
+```-w [codewords file]```   A file containing code words to use.
+  
+```-c ```                   Display a crib showing the mapping of blocked values
                         to their obfuscated values. Only works when a specific
                         blockfile is used with the -b option.
                         
-  `-n [N]`              An index to indicate which bytes of the generated hash
+```-n [N]```                An index to indicate which bytes of the generated hash
                         to use as a lookup into the codewords file. Defaults
-                        to 4.
+                        to 0.
+                        
+```-e [E]```                A string of comma-separated domain name components
+                        that should be exempt from obfuscation to aid
+                        readability. Dots are not permitted/valid. Defaults to
+                        'com,co,uk,org' and any that are specified on the
+                        command line are added to this list.
+                        
+```-a [ALGO], --algo [ALGO]```
+                        The hash algorithm to use as a basis for indexing the
+                        codewords file; defaults to SHA256
+                        
+``` -s [SALT], --salt [SALT]```
+                        A salt for the hash function to ensure uniqueness of
+                        encoding.
+                        
+``` -l, --list-algos```      List available hash algorithms.
+ 
+```-v ```                   Verbose mode = show key parameters, etc
 
-If no plaintext is provided, then obf will look at stdin instead.
+
+
 
 **Examples**
 ------------
@@ -112,6 +137,18 @@ secret -> SACCHAROID
 name -> CLEAVE
 bob -> RETENE
 sue -> GIBLETS
+```
+
+```
+obf -b blockedwords.txt -c -v -n23 --algo MD5 --salt examplesalt
+{'codewords_hash': '25e011f81127ec5b07511850b3c153ce6939ff9b96bc889b2e66fb36782fbc0e', 'salt': 'examplesalt',
+ 'hash_index_length': 4, 'hash_algo': 'MD5', 'excluded_domains': ['com', 'org', 'co', 'uk'], 'hash_index': 12, 
+ 'codewords_file': '../obf/codewords.txt', 'blockedwords': ['secret', 'name', 'bob', 'sue'], 
+ 'codewords_length': 66740}
+secret -> REVEALMENT
+name -> LOBATE
+bob -> ZOMBIS
+sue -> DEIL
 ```
 
 **Homepage**

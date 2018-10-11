@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="obf",
-    version="0.0.1",
+    version="0.0.2",
     author="Hossein Ghodse",
     author_email="hossein.ghodse@gmail.com",
     description="an obfuscation tool and library",
