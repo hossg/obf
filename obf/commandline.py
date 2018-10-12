@@ -32,6 +32,8 @@ def main():
     parser.add_argument('-s','--salt', nargs='?', default='',
                         help="A salt for the hash function to ensure uniqueness of encoding.")
     parser.add_argument('-l', '--list-algos', action="store_true", help="List available hash algorithms.")
+    parser.add_argument('-j','--json', nargs='?', help = "Treat the input as JSON, and apply the obfuscation rules to "\
+                        "each of the fields/keys specified in this space-delimited list")
     parser.add_argument('-v', action="store_true", help="Verbose mode = show key parameters, etc")
 
     args=parser.parse_args()
@@ -72,7 +74,7 @@ def main():
 
     d=o.describe()
     # Verbose mode?
-    if (parser.parse_args().v):
+    if args.v:
         print(d)
 
     # and if so, is a crib sheet required?
@@ -90,15 +92,18 @@ def main():
     if args.plaintext:
         print(' '.join(map(o.encode_text,args.plaintext.split())))
     # else take plaintext from stdin, line at a time
+    elif args.json:
+
+        j=''
+        for line in sys.stdin:
+            j = j + line
+
+        print(o.encode_json(j,args.json.split()))
     else:
         for line in sys.stdin:
             line=line[:-1]
             print(o.encode_text(line))
 
-
-def test():
-    print('This is a test')
-    print(obf)
 
 # Command line behaviour
 if __name__=='__main__':

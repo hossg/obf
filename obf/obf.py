@@ -20,6 +20,7 @@
 import hashlib
 import re
 import os
+import json
 
 # requirements:
 # 1. a plaintext word always maps to the same codeword
@@ -176,6 +177,23 @@ class obfuscator:
         t = rr.sub(self.__encodedReplacement,t)
         return t
 
+    def __encode_list(self, l):
+        m = [i.upper() if type(i) is str else i for i in l]
+        n = [self.__encode_list(self, i) if type(i) is list else i for i in m]
+        return n
 
+    def __encode_selected_key(self,d):
+        for k in self.selected_keys:
+            if k in d:
+                if type(d[k]) is str:
+                    d[k]=self.encode_text(d[k])
+                if type(d[k]) is list:
+                    d[k]=self.__encode_list(d[k])
+        return d
+
+    def encode_json(self, s, selected_keys):
+        self.selected_keys=selected_keys
+        x=json.loads(s, object_hook=self.__encode_selected_key)
+        return x
 
 

@@ -69,6 +69,12 @@ obf [-h] [-b [blockedwords file]] [-w [codewords file]] [-c]
                         encoding.
                         
 ``` -l, --list-algos```      List available hash algorithms.
+
+```-j [JSON], --json [JSON]```
+                        Treat the input as JSON, and apply the obfuscation
+                        rules to each of the fields/keys specified in this
+                        space-delimited list
+
  
 ```-v ```                   Verbose mode = show key parameters, etc
 
