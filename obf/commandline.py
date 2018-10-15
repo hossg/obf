@@ -1,5 +1,5 @@
 import obf
-import argparse, hashlib,sys,os
+import argparse, hashlib,sys,os, demjson
 
 
 
@@ -97,8 +97,10 @@ def main():
         j=''
         for line in sys.stdin:
             j = j + line
+        j = demjson.decode(j)
+        j = demjson.encode(j,compactly=False)       # do our best to make the JSON valid and presentable
 
-        print(o.encode_json(j,args.json.split()))
+        print(demjson.encode(o.encode_json(j,args.json.split()),compactly=False))
     else:
         for line in sys.stdin:
             line=line[:-1]

@@ -22,4 +22,7 @@ setuptools.setup(
     entry_points = {
         'console_scripts': ['obf=obf.commandline:main'],
     }
+    install_requires=[
+          'demjson'
+    ]
 )
