@@ -33,28 +33,29 @@ obf [-h] [-b [blockedwords file]] [-w [codewords file]] [-c]
 
 #### positional arguments:
 
-  ```plaintext             ```A plaintext to obfuscate. If no plaintext is provided,
+  ```plaintext```       A plaintext to obfuscate. If no plaintext is provided,
                         then obf will look at stdin instead.
 
 #### optional arguments:
 
-```-h, --help```            show this help message and exit
+```-h, --help```        Show this help message and exit
   
 ```-b [blockedwords file]```
                         A file containing specific words to block. If missing
                         the entire input is obfuscated.
                         
-```-w [codewords file]```   A file containing code words to use.
+```-w [codewords file]```
+                        A file containing code words to use.
   
-```-c ```                   Display a crib showing the mapping of blocked values
+```-c ```               Display a crib showing the mapping of blocked values
                         to their obfuscated values. Only works when a specific
                         blockfile is used with the -b option.
                         
-```-n [N]```                An index to indicate which bytes of the generated hash
+```-n [N]```            An index to indicate which bytes of the generated hash
                         to use as a lookup into the codewords file. Defaults
                         to 0.
                         
-```-e [E]```                A string of comma-separated domain name components
+```-e [E]```            A string of comma-separated domain name components
                         that should be exempt from obfuscation to aid
                         readability. Dots are not permitted/valid. Defaults to
                         'com,co,uk,org' and any that are specified on the
@@ -64,11 +65,11 @@ obf [-h] [-b [blockedwords file]] [-w [codewords file]] [-c]
                         The hash algorithm to use as a basis for indexing the
                         codewords file; defaults to SHA256
                         
-``` -s [SALT], --salt [SALT]```
+```-s [SALT], --salt [SALT]```
                         A salt for the hash function to ensure uniqueness of
                         encoding.
                         
-``` -l, --list-algos```      List available hash algorithms.
+```-l, --list-algos``` List available hash algorithms.
 
 ```-j [JSON], --json [JSON]```
                         Treat the input as JSON, and apply the obfuscation
@@ -76,7 +77,7 @@ obf [-h] [-b [blockedwords file]] [-w [codewords file]] [-c]
                         space-delimited list
 
  
-```-v ```                   Verbose mode = show key parameters, etc
+```-v ```               Verbose mode = show key parameters, etc
 
 
 
