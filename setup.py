@@ -20,8 +20,8 @@ setuptools.setup(
     ],
     include_package_data=True,
     entry_points = {
-        'console_scripts': ['obf=obf.commandline:main'],
-    }
+        'console_scripts': ['obf=obf.commandline:main']
+    },
     install_requires=[
           'demjson'
     ]
