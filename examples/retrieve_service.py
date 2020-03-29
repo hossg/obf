@@ -1,3 +1,5 @@
+#! python3
+
 from bottle import route, run, request, response, static_file
 
 # A super simple dummy web service that will retrieve a resource and return it to the caller.
