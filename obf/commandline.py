@@ -1,16 +1,22 @@
 import obf
 import argparse, hashlib,sys,os, demjson
+import proxy
+import configargparse
 
 
 
 def main():
 
-    parser = argparse.ArgumentParser(
+    parser = configargparse.ArgumentParser(
         description="obf - an obfuscation tool",
-        epilog="More information/homepage: https://github.com/hossg/obf'")
+        epilog="More information/homepage: https://github.com/hossg/obf",
+        default_config_files=['/etc/obf.conf', '~/.obf'])
+
+
+    parser.add('--config', required=False, is_config_file=True, help='Config file path')
     parser.add_argument('plaintext',nargs="?", help="A plaintext to obfuscate. If no plaintext is provided, then obf " \
                                                     "will look at stdin instead.")
-    parser.add_argument('-b',metavar='blockedwords file',nargs='?', help="A file containing specific words to block. " \
+    parser.add_argument('-b', '--blockedwords', metavar='blockedwords file',nargs='?', help="A file containing specific words to block. " \
                                                                         "If missing the entire input is obfuscated.")
     parser.add_argument('-w', metavar='codewords file', nargs='?',
                         default=os.path.dirname(__file__)+'/'+"codewords.txt",
@@ -20,7 +26,7 @@ def main():
                                                                     "values to their obfuscated values.  Only works "\
                                                                     "when a specific blockfile is used with the -b "\
                                                                     "option.")
-    parser.add_argument('-n',type=int,default=0,nargs='?', help="An index to indicate which bytes of the generated hash " \
+    parser.add_argument('-n','--n_offset', type=int,default=0,nargs='?', help="An index to indicate which bytes of the generated hash " \
                                                                 "to use as a lookup into the codewords file. Defaults "
                                                                 "to 0.")
     parser.add_argument('-e', nargs='?',
@@ -35,6 +41,7 @@ def main():
     parser.add_argument('-j','--json', nargs='?', help = "Treat the input as JSON, and apply the obfuscation rules to "\
                         "each of the fields/keys specified in this space-delimited list")
     parser.add_argument('-v', action="store_true", help="Verbose mode = show key parameters, etc")
+    parser.add_argument('--proxy', nargs=1, help = "A hostname and port to proxy for")
 
     args=parser.parse_args()
 
@@ -52,8 +59,8 @@ def main():
 
     # Is a blockedwords file provided?
     blockedwords=[]
-    if args.b:
-        with open(args.b) as f:
+    if args.blockedwords:
+        with open(args.blockedwords) as f:
             lines = f.read().splitlines()
             for line in lines:
                 for word in line.split():
@@ -64,7 +71,7 @@ def main():
     o = obf.obfuscator(algo=args.algo,
                        salt=args.salt,
                        blockedwords=blockedwords,
-                       hash_index=args.n,
+                       hash_index=args.n_offset,
                        hash_index_length=4,
                        codewords_file=codewords_file,
                        codewords_hash='25e011f81127ec5b07511850b3c153ce6939ff9b96bc889b2e66fb36782fbc0e',
@@ -101,6 +108,8 @@ def main():
         j = demjson.encode(j,compactly=False)       # do our best to make the JSON valid and presentable
 
         print(demjson.encode(o.encode_json(j,args.json.split()),compactly=False))
+    elif args.proxy:
+        proxy.main(['--enable-web-server','--plugin', 'obf.obf_reverse_proxy'])
     else:
         for line in sys.stdin:
             line=line[:-1]
