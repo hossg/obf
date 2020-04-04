@@ -22,6 +22,7 @@ import re
 import os
 import json
 
+
 # requirements:
 # 1. a plaintext word always maps to the same codeword
 # 2. it is extremely unlikely that two different plaintext words map to the same codeword
@@ -35,16 +36,26 @@ import json
 # hash permits, we can avoid this increase in collision probability. If we have a dictionary of >=65535 codewords, then
 # we should pick our effective hash to be 4 bytes long.
 
+DEFAULT_ALGO = "SHA256"
+DEFAULT_SALT = ''
+DEFAULT_BLOCKEDWORDS_FILE = None
+DEFAULT_CODEWORDS_FILE = codewords_file = os.path.dirname(__file__) + '/' + "codewords.txt"
+DEFAULT_HASH_INDEX_OFFSET = 0
+DEFAULT_IGNORED_EMAIL_DOMAINS = ['com', 'org', 'co', 'uk']
+DEFAULT_HASH_INDEX_LENGTH = 4
+DEFAULT_CODEWORDS_HASH ='25e011f81127ec5b07511850b3c153ce6939ff9b96bc889b2e66fb36782fbc0e'
+
 class obfuscator:
 
-    def __init__(self, algo="SHA256",salt='',blockedwords=None, hash_index=0, hash_index_length=4,
-                 codewords_file=os.path.dirname(__file__)+'/'+"codewords.txt",
-                 codewords_hash='25e011f81127ec5b07511850b3c153ce6939ff9b96bc889b2e66fb36782fbc0e',
-                 excluded_domains=['com', 'org', 'co', 'uk']):
+    def __init__(self, algo=DEFAULT_ALGO,salt=DEFAULT_SALT,blockedwords=DEFAULT_BLOCKEDWORDS_FILE,
+                 hash_index=DEFAULT_HASH_INDEX_OFFSET, hash_index_length=DEFAULT_HASH_INDEX_LENGTH,
+                 codewords_file=DEFAULT_CODEWORDS_FILE,
+                 codewords_hash=DEFAULT_CODEWORDS_HASH,
+                 excluded_domains=DEFAULT_IGNORED_EMAIL_DOMAINS):
 
         self.excluded_domains=excluded_domains
         self.p=hash_index_length
-        self.n=hash_index                 # The default position in the hash string to use as a lookup into the codewords list
+        self.n=hash_index           # The default position in the hash string to use as a lookup into the codewords list
         self.salt = salt
         self.hash_algo = hashlib.new(algo)
         if self.n < 0:
@@ -58,9 +69,6 @@ class obfuscator:
         self.codewords_hash=codewords_hash
         if self.__check_integrity():
             self.codewords = self.load_codewords(codewords_file)
-
-
-
 
     def describe(self):
         return {
@@ -191,9 +199,10 @@ class obfuscator:
                     d[k]=self.__encode_list(d[k])
         return d
 
+# Given a json document as a string, and a set of selected keys to obfuscate, this will return an object with the values
+# of those keys obfuscated
     def encode_json(self, s, selected_keys):
         self.selected_keys=selected_keys
         x=json.loads(s, object_hook=self.__encode_selected_key)
         return x
-
 
