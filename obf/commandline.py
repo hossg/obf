@@ -12,20 +12,32 @@ def main():
         epilog="More information/homepage: https://github.com/hossg/obf",
         default_config_files=['/etc/obf.conf', '~/.obf'])
 
-
+    # command line only arguments that are relevant only for "interactive" use of the tool
     parser.add('--config', required=False, is_config_file=True, help='Config file path')
     parser.add_argument('plaintext',nargs="?", help="A plaintext to obfuscate. If no plaintext is provided, then obf " \
                                                     "will look at stdin instead.")
+    parser.add_argument('-c', action="store_true", default=False, help="Display a crib showing the mapping of blocked " \
+                                                                       "values to their obfuscated values.  Only works " \
+                                                                       "when a specific blockfile is used with the -b " \
+                                                                       "option.")
+
+    parser.add_argument('-l', '--list-algos', action="store_true", help="List available hash algorithms.")
+
+    parser.add_argument('-v', action="store_true", help="Verbose mode = show key parameters, etc")
+
+    parser.add_argument('--proxy', nargs=1, help = "A hostname and port to proxy for")
+
+    parser.add_argument('-j','--json', nargs='?', help = "Treat the input as JSON, and apply the obfuscation rules to "\
+                        "each of the fields/keys specified in this space-delimited list")
+    # arguments for config file, environment variables or config file, useful for configuring the obfuscator
+
+
     parser.add_argument('-b', '--blockedwords', metavar='blockedwords file',nargs='?', help="A file containing specific words to block. " \
                                                                         "If missing the entire input is obfuscated.")
     parser.add_argument('-w', metavar='codewords file', nargs='?',
                         default=os.path.dirname(__file__)+'/'+"codewords.txt",
                         help="A file containing code words to use. ")
 
-    parser.add_argument('-c',action="store_true",default=False,help="Display a crib showing the mapping of blocked "\
-                                                                    "values to their obfuscated values.  Only works "\
-                                                                    "when a specific blockfile is used with the -b "\
-                                                                    "option.")
     parser.add_argument('-n','--n_offset', type=int,default=0,nargs='?', help="An index to indicate which bytes of the generated hash " \
                                                                 "to use as a lookup into the codewords file. Defaults "
                                                                 "to 0.")
@@ -33,15 +45,14 @@ def main():
                         help="A string of comma-separated domain name components that should be exempt from obfuscation"\
                         " to aid readability. Dots are not permitted/valid. Defaults to 'com,co,uk,org' and any that "\
                         "are specified on the command line are added to this list.")
+
     parser.add_argument('-a','--algo', nargs='?',default="SHA256",
                         help="The hash algorithm to use as a basis for indexing the codewords file; defaults to SHA256")
+
     parser.add_argument('-s','--salt', nargs='?', default='',
                         help="A salt for the hash function to ensure uniqueness of encoding.")
-    parser.add_argument('-l', '--list-algos', action="store_true", help="List available hash algorithms.")
-    parser.add_argument('-j','--json', nargs='?', help = "Treat the input as JSON, and apply the obfuscation rules to "\
-                        "each of the fields/keys specified in this space-delimited list")
-    parser.add_argument('-v', action="store_true", help="Verbose mode = show key parameters, etc")
-    parser.add_argument('--proxy', nargs=1, help = "A hostname and port to proxy for")
+
+
 
     args=parser.parse_args()
 
