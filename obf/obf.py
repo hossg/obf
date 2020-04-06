@@ -38,7 +38,7 @@ import json
 
 DEFAULT_ALGO = "SHA256"
 DEFAULT_SALT = ''
-DEFAULT_BLOCKEDWORDS_FILE = None
+DEFAULT_BLOCKEDWORDS = None
 DEFAULT_CODEWORDS_FILE = codewords_file = os.path.dirname(__file__) + '/' + "codewords.txt"
 DEFAULT_HASH_INDEX_OFFSET = 0
 DEFAULT_IGNORED_EMAIL_DOMAINS = ['com', 'org', 'co', 'uk']
@@ -47,7 +47,7 @@ DEFAULT_CODEWORDS_HASH ='25e011f81127ec5b07511850b3c153ce6939ff9b96bc889b2e66fb3
 
 class obfuscator:
 
-    def __init__(self, algo=DEFAULT_ALGO,salt=DEFAULT_SALT,blockedwords=DEFAULT_BLOCKEDWORDS_FILE,
+    def __init__(self, algo=DEFAULT_ALGO,salt=DEFAULT_SALT,blockedwords=DEFAULT_BLOCKEDWORDS,
                  hash_index=DEFAULT_HASH_INDEX_OFFSET, hash_index_length=DEFAULT_HASH_INDEX_LENGTH,
                  codewords_file=DEFAULT_CODEWORDS_FILE,
                  codewords_hash=DEFAULT_CODEWORDS_HASH,
@@ -185,24 +185,33 @@ class obfuscator:
         t = rr.sub(self.__encodedReplacement,t)
         return t
 
-    def __encode_list(self, l):
-        m = [i.upper() if type(i) is str else i for i in l]
-        n = [self.__encode_list(self, i) if type(i) is list else i for i in m]
+
+    def encode_list(self, l):
+        """Recursively encodes all string elements in a list"""
+
+        m = [self.encode_text(i) if type(i) is str else i for i in l]
+        n = [self.encode_list(i) if type(i) is list else i for i in m]
         return n
 
     def __encode_selected_key(self,d):
+        """Encodes all string values and list values in a dict, if the key is part of the seclector defined by
+        this obfuscator"""
+
         for k in self.selected_keys:
             if k in d:
                 if type(d[k]) is str:
                     d[k]=self.encode_text(d[k])
                 if type(d[k]) is list:
-                    d[k]=self.__encode_list(d[k])
+                    d[k]=self.encode_list(d[k])
         return d
 
-# Given a json document as a string, and a set of selected keys to obfuscate, this will return an object with the values
-# of those keys obfuscated
     def encode_json(self, s, selected_keys):
+        """Given a json document as a string, and a set of selected keys to obfuscate, this will return an object with
+        the values of those keys obfuscated
+        """
+
         self.selected_keys=selected_keys
         x=json.loads(s, object_hook=self.__encode_selected_key)
         return x
+
 
