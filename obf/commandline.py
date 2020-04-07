@@ -1,5 +1,5 @@
 import obf
-import argparse, hashlib,sys,os, demjson
+import hashlib,sys,os, json
 import proxy
 import configargparse
 
@@ -115,10 +115,14 @@ def main():
         j=''
         for line in sys.stdin:
             j = j + line
-        j = demjson.decode(j)
-        j = demjson.encode(j,compactly=False)       # do our best to make the JSON valid and presentable
-
-        print(demjson.encode(o.encode_json(j,args.json.split()),compactly=False))
+        # j = demjson.decode(j)
+        # j = demjson.encode(j,compactly=False)       # do our best to make the JSON valid and presentable
+        #
+        # print(demjson.encode(o.encode_json(j,args.json.split()),compactly=False))
+        j = json.loads(j)
+        j = json.dumps(j,indent=2) # do our best to make the JSON valid and presentable
+        j_o = o.encode_json(j,args.json.split())
+        print(json.dumps(j_o,indent=2))
     elif args.proxy:
         proxy.main(['--enable-web-server','--plugin', 'obf.obf_reverse_proxy'])
     else:

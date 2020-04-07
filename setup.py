@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="obf",
-    version="0.0.2",
+    version="0.0.4",
     author="Hossein Ghodse",
     author_email="hossein.ghodse@gmail.com",
     description="an obfuscation tool and library",
@@ -22,7 +22,7 @@ setuptools.setup(
     entry_points = {
         'console_scripts': ['obf=obf.commandline:main']
     },
-    install_requires=[
-          'demjson'
-    ]
+    # install_requires=[
+    #       'demjson'
+    # ]
 )
