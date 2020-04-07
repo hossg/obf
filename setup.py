@@ -3,9 +3,12 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+with open ("obf/VERSION", "r") as fh2:
+    version = fh2.read()
+
 setuptools.setup(
     name="obf",
-    version="0.0.4",
+    version=version,
     author="Hossein Ghodse",
     author_email="hossein.ghodse@gmail.com",
     description="an obfuscation tool and library",

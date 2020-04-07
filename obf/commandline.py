@@ -7,8 +7,12 @@ import configargparse
 
 def main():
 
+    VERSION_FILE_NAME = os.path.dirname(__file__)+"/VERSION"
+    with open(VERSION_FILE_NAME, "r") as fh:
+        version = fh.read()
+
     parser = configargparse.ArgumentParser(
-        description="obf - an obfuscation tool",
+        description="obf v"+ version +" - an obfuscation tool",
         epilog="More information/homepage: https://github.com/hossg/obf",
         default_config_files=['/etc/obf.conf', '~/.obf'])
 
