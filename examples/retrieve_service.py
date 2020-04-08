@@ -1,12 +1,19 @@
 #! python3
 
-from bottle import route, run, request, response, static_file
+# A simple Flask-based service to retrieve a file, to simulate a web-service
 
-# A super simple dummy web service that will retrieve a resource and return it to the caller.
-# Used only to allow demonstration of the obf proxy service
+from flask import Flask, send_file
 
-@route('/retrieve/<file:path>')
-def server_static(file):
-    return static_file(file,root='.')
+app = Flask(__name__)
+keys_to_encode=['color','category']
 
-run(host='localhost', port=8080, debug=True)
+@app.route('/')
+def index():
+    return 'Flask is running!'
+
+@app.route('/retrieve/<path:path>',methods=['GET'])
+def proxy(path):
+    return send_file(f'{path}')
+
+if __name__ == '__main__':
+    app.run(debug=True, port=8080)
